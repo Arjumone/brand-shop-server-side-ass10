@@ -26,7 +26,7 @@ async function run() {
     await client.connect();
 
     const productCollection = client.db('productDB').collection('products')
-    const brandCollection = client.db('brandDB').collection('brands')
+    // const brandCollection = client.db('productDB').collection('brands')
 
     app.get('/products',async(req,res)=>{
       const cursor = productCollection.find()
@@ -34,9 +34,14 @@ async function run() {
       res.send(result)
     })
 
-    // app.get('/brands',async(req,res)=>{
-    //   const 
-    // })
+    app.get('/products/:brandName',async(req,res)=>{
+      const brandNames = req.params.brandName;
+      const query = {brandName: brandNames}
+      const result = await productCollection.find(query).toArray()
+      res.send(result)
+
+      
+    })
 
 
     app.post('/products',async(req,res)=>{
@@ -45,15 +50,6 @@ async function run() {
       res.send(result)
       
   })
-
-    app.post('/products/:brandName',async(req,res)=>{
-      const brandName = req.params.brandName
-      console.log(brandName);
-      const query = {brandName: new ObjectId(brandName)}
-      const result = await brandCollection.find(query)
-      res.send(result)
-    })
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
