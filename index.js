@@ -23,9 +23,10 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const productCollection = client.db('productDB').collection('products')
+    const cartCollection = client.db('productDb').collection('carts')
 
     app.get('/products',async(req,res)=>{
       const cursor = productCollection.find()
@@ -40,7 +41,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/products/:id',async(req,res)=>{
+    app.get('/products/details/:id',async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
       const result = await productCollection.findOne(query)
@@ -50,8 +51,12 @@ async function run() {
     app.post('/products',async(req,res)=>{
       const newProducts = req.body 
       const result = await productCollection.insertOne(newProducts)
-      res.send(result)
-      
+      res.send(result);
+  })
+    app.post('/cart',async(req,res)=>{
+      const newCart = req.body 
+      const result = await productCollection.insertOne(newCart)
+      res.send(result);
   })
 
     // Send a ping to confirm a successful connection
